@@ -1,0 +1,110 @@
+Hard Level:
+Write a Java program to process a large dataset of products using streams. Perform operations such as grouping products by category, finding the most expensive product in each category, and calculating the average price of all products.
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+class Product {
+    private String name;
+    private String category;
+    private double price;
+
+    public Product(String name, String category, double price) {
+        this.name = name;
+        this.category = category;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", price=" + price +
+                '}';
+    }
+}
+
+public class HardLevel {
+    public static void main(String[] args) {
+        List<Product> products = new ArrayList<>();
+        products.add(new Product("Product A", "Electronics", 1000));
+        products.add(new Product("Product B", "Electronics", 800));
+        products.add(new Product("Product C", "Fashion", 500));
+        products.add(new Product("Product D", "Fashion", 600));
+        products.add(new Product("Product E", "Home Goods", 300));
+        products.add(new Product("Product F", "Home Goods", 400));
+
+        // Grouping products by category
+        Map<String, List<Product>> productsByCategory = products.stream()
+                .collect(Collectors.groupingBy(Product::getCategory));
+
+        System.out.println("Products Grouped by Category:");
+        productsByCategory.forEach((category, productList) -> {
+            System.out.println("Category: " + category);
+            productList.forEach(System.out::println);
+        });
+
+        // Finding the most expensive product in each category
+        Map<String, Product> mostExpensiveProducts = products.stream()
+                .collect(Collectors.groupingBy(
+                        Product::getCategory,
+                        Collectors.collectingAndThen(
+                                Collectors.maxBy(Comparator.comparingDouble(Product::getPrice)),
+                                Optional::orElseThrow
+                        )
+                ));
+
+        System.out.println("\nMost Expensive Products by Category:");
+        mostExpensiveProducts.forEach((category, product) -> {
+            System.out.println("Category: " + category + ", Most Expensive Product: " + product);
+        });
+
+        // Calculating the average price of all products
+        double averagePrice = products.stream()
+                .mapToDouble(Product::getPrice)
+                .average()
+                .orElse(0);
+
+        System.out.println("\nAverage Price of All Products: " + averagePrice);
+    }
+}
+
+
+
+OUTPUT:
+
+Products Grouped by Category:
+Category: Electronics
+Product{name='Product A', category='Electronics', price=1000.0}
+Product{name='Product B', category='Electronics', price=800.0}
+Category: Fashion
+Product{name='Product C', category='Fashion', price=500.0}
+Product{name='Product D', category='Fashion', price=600.0}
+Category: Home Goods
+Product{name='Product E', category='Home Goods', price=300.0}
+Product{name='Product F', category='Home Goods', price=400.0}
+
+Most Expensive Products by Category:
+Category: Electronics, Most Expensive Product: Product{name='Product A', category='Electronics', price=1000.0}
+Category: Fashion, Most Expensive Product: Product{name='Product D', category='Fashion', price=600.0}
+Category: Home Goods, Most Expensive Product: Product{name='Product F', category='Home Goods', price=400.0}
+
+Average Price of All Products: 583.3333333333334

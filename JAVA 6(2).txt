@@ -1,0 +1,73 @@
+Medium Level:
+Create a program to use lambda expressions and stream operations to filter students scoring above 75%, sort them by marks, and display their names.
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+class Student {
+    private String name;
+    private double marks;
+
+    public Student(String name, double marks) {
+        this.name = name;
+        this.marks = marks;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getMarks() {
+        return marks;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", marks=" + marks +
+                '}';
+    }
+}
+
+public class MediumLevel {
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("John", 80));
+        students.add(new Student("Alice", 90));
+        students.add(new Student("Bob", 70));
+        students.add(new Student("Eve", 85));
+
+        // Filtering and sorting using lambda expressions and stream operations
+        List<Student> filteredStudents = students.stream()
+                .filter(s -> s.getMarks() > 75)
+                .sorted((s1, s2) -> Double.compare(s1.getMarks(), s2.getMarks()))
+                .collect(Collectors.toList());
+
+        System.out.println("Students with Marks Above 75%, Sorted by Marks:");
+        filteredStudents.forEach(System.out::println);
+
+        // Displaying names
+        System.out.println("\nNames of Students with Marks Above 75%, Sorted by Marks:");
+        filteredStudents.stream()
+                .map(Student::getName)
+                .forEach(System.out::println);
+    }
+}
+
+
+
+OUTPUT:
+
+Students with Marks Above 75%, Sorted by Marks:
+Student{name='John', marks=80.0}
+Student{name='Eve', marks=85.0}
+Student{name='Alice', marks=90.0}
+
+Names of Students with Marks Above 75%, Sorted by Marks:
+John
+Eve
+Alice
+
